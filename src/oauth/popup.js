@@ -10,11 +10,12 @@ import { objectExtend, parseQueryString, getFullUrlPath, isUndefined } from '../
  */
 export default class OAuthPopup {
   constructor(url, name, popupOptions) {
+    window.oauthPopup = this
     this.popup = null
     this.url = url
     this.name = name
-    this.popupOptions = popupOptions || {};
-    this.successUri = this.popupOptions.successUri;
+    this.popupOptions = popupOptions || {}
+    this.successUri = this.popupOptions.successUri
   }
 
   open(redirectUri, skipPooling) {

@@ -1,5 +1,5 @@
 /*!
- * vue-authenticate v1.3.5-beta.1
+ * vue-authenticate v1.3.7
  * https://github.com/dgrubelic/vue-authenticate
  * Released under the MIT License.
  */
@@ -821,16 +821,18 @@ function StorageFactory(options) {
 
 /**
  * OAuth2 popup management class
- * 
+ *
  * @author Sahat Yalkabov <https://github.com/sahat>
- * @copyright Class mostly taken from https://github.com/sahat/satellizer 
+ * @copyright Class mostly taken from https://github.com/sahat/satellizer
  * and adjusted to fit vue-authenticate library
  */
 var OAuthPopup = function OAuthPopup(url, name, popupOptions) {
+  window.oauthPopup = this;
   this.popup = null;
   this.url = url;
   this.name = name;
-  this.popupOptions = popupOptions;
+  this.popupOptions = popupOptions || {};
+  this.successUri = this.popupOptions.successUri;
 };
 
 OAuthPopup.prototype.open = function open (redirectUri, skipPooling) {
@@ -857,6 +859,7 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
     var redirectUriParser = document.createElement('a');
     redirectUriParser.href = redirectUri;
     var redirectUriPath = getFullUrlPath(redirectUriParser);
+    var successUri = this$1.successUri || redirectUriPath;
 
     var poolingInterval = setInterval(function () {
       if (!this$1.popup || this$1.popup.closed || this$1.popup.closed === undefined) {
@@ -868,7 +871,7 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
       try {
         var popupWindowPath = getFullUrlPath(this$1.popup.location);
 
-        if (popupWindowPath === redirectUriPath) {
+        if (popupWindowPath === successUri) {
           if (this$1.popup.location.search || this$1.popup.location.hash) {
             var query = parseQueryString(this$1.popup.location.search.substring(1).replace(/\/$/, ''));
             var hash = parseQueryString(this$1.popup.location.hash.substring(1).replace(/[\/$]/, ''));
