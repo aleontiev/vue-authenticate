@@ -47,10 +47,10 @@ export default class OAuth2 {
     let url = [this.providerConfig.authorizationEndpoint, this._stringifyRequestParams()].join('?')
 
     this.oauthPopup = new OAuthPopup(url, this.providerConfig.name, this.providerConfig.popupOptions)
-    
+
     return new Promise((resolve, reject) => {
       this.oauthPopup.open(this.providerConfig.redirectUri).then((response) => {
-        if (this.providerConfig.responseType === 'token' || !this.providerConfig.url) {
+        if (this.providerConfig.responseType === 'token' || !this.providerConfig.url || this.providerConfig.resolveOnSuccess) {
           return resolve(response)
         }
 
@@ -69,7 +69,7 @@ export default class OAuth2 {
    * Exchange temporary oauth data for access token
    * @author Sahat Yalkabov <https://github.com/sahat>
    * @copyright Method taken from https://github.com/sahat/satellizer
-   * 
+   *
    * @param  {[type]} oauth    [description]
    * @param  {[type]} userData [description]
    * @return {[type]}          [description]
@@ -115,7 +115,7 @@ export default class OAuth2 {
    * Stringify oauth params
    * @author Sahat Yalkabov <https://github.com/sahat>
    * @copyright Method taken from https://github.com/sahat/satellizer
-   * 
+   *
    * @return {String}
    */
   _stringifyRequestParams() {

@@ -92,13 +92,14 @@ export default class VueAuthenticate {
     if (response[this.options.responseDataKey]) {
       response = response[this.options.responseDataKey];
     }
-    
+
     let token;
-    if (response.access_token) {
-      if (isObject(response.access_token) && isObject(response.access_token[this.options.responseDataKey])) {
-        response = response.access_token
-      } else if (isString(response.access_token)) {
-        token = response.access_token
+    const access = response.access_token || response['access-token'];
+    if (access) {
+      if (isObject(access) && isObject(access[this.options.responseDataKey])) {
+        response = access
+      } else if (isString(access)) {
+        token = access
       }
     }
 
@@ -122,7 +123,7 @@ export default class VueAuthenticate {
       } catch (e) {}
     }
   }
-  
+
   /**
    * Login user using email and password
    * @param  {Object} user           User data
@@ -190,7 +191,7 @@ export default class VueAuthenticate {
 
   /**
    * Authenticate user using authentication provider
-   * 
+   *
    * @param  {String} provider       Provider name
    * @param  {Object} userData       User data
    * @param  {Object} requestOptions Request options
