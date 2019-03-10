@@ -3,9 +3,9 @@ import { objectExtend, parseQueryString, getFullUrlPath, isUndefined } from '../
 
 /**
  * OAuth2 popup management class
- * 
+ *
  * @author Sahat Yalkabov <https://github.com/sahat>
- * @copyright Class mostly taken from https://github.com/sahat/satellizer 
+ * @copyright Class mostly taken from https://github.com/sahat/satellizer
  * and adjusted to fit vue-authenticate library
  */
 export default class OAuthPopup {
@@ -13,7 +13,8 @@ export default class OAuthPopup {
     this.popup = null
     this.url = url
     this.name = name
-    this.popupOptions = popupOptions
+    this.popupOptions = popupOptions || {};
+    this.successUri = this.popupOptions.successUri;
   }
 
   open(redirectUri, skipPooling) {
@@ -38,6 +39,7 @@ export default class OAuthPopup {
       const redirectUriParser = document.createElement('a')
       redirectUriParser.href = redirectUri
       const redirectUriPath = getFullUrlPath(redirectUriParser)
+      const successUri = this.successUri || redirectUriPath;
 
       let poolingInterval = setInterval(() => {
         if (!this.popup || this.popup.closed || this.popup.closed === undefined) {
@@ -49,7 +51,7 @@ export default class OAuthPopup {
         try {
           const popupWindowPath = getFullUrlPath(this.popup.location)
 
-          if (popupWindowPath === redirectUriPath) {
+          if (popupWindowPath === successUri) {
             if (this.popup.location.search || this.popup.location.hash) {
               const query = parseQueryString(this.popup.location.search.substring(1).replace(/\/$/, ''));
               const hash = parseQueryString(this.popup.location.hash.substring(1).replace(/[\/$]/, ''));
